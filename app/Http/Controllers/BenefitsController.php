@@ -24,8 +24,48 @@ class BenefitsController extends Controller
         $this->dataSheet = collect($dataSheetRes['data']);
     }
 
-    public function index() {
+    public function yearBenefits() {
 
-        return [$this->benefits,$this->filters,$this->dataSheet];
+        $data = collect();
+
+        $this->benefits->map(function ($value, $key) {
+            $year = date('Y', strtotime($value['fecha']));
+            $value['ano'] = $year;
+            $filter = $this->filters->filter(function ($filter, $key) use ($value) {
+                return $filter['id_programa'] == $value['id_programa'];
+            });
+
+            $dataSheet = $this->dataSheet->filter(function ($ds, $key) use ($filter) {
+                return $ds['id'] == $filter->first()['ficha_id'];
+            });
+
+            $value['ficha'] = (object) $dataSheet->values()[0];
+
+            return $value;
+        })->groupBy(function ($item) {
+            $year = date('Y', strtotime($item['fecha']));
+
+            return $year;
+        })->each(function ($value, $key) use ($data) {
+            $filtered = $value->filter(function ($benefit) {
+                $filter = $this->filters->first(function ($value) use ($benefit) {
+                    return $value['id_programa'] === $benefit['id_programa'];
+                });
+
+                return $benefit['monto'] >= $filter['min'] && $benefit['monto'] <= $filter['max'];
+            });
+
+            $data[] = [
+                'year' => $key,
+                'num' => count($filtered),
+                'beneficios' => $filtered->values(),
+            ];
+        });
+
+        return [
+            'code' => 200,
+            'success' => true,
+            'data' => $data,
+        ];
     }
 }

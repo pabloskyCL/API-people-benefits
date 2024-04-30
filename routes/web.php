@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('yearBenefits', [BenefitsController::class, 'index']);
+Route::get('yearBenefits', [BenefitsController::class, 'yearBenefits']);
