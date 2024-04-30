@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: 'Beneficios agrupados por año, ya filtrados'
+  description: 'Prueba tecnica, consumo de end points: benficios, filtros y fichas. Se filtra cada beneficio segun su filtro asociado, para agruparlos por año'
+  version: '1.0'
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /yearBenefits:
+    get:
+      tags:
+        - Beneficios
+      summary: 'Filtra los beneficios y se les asigna una ficha, agrupando los beneficios por año.'
+      description: 'Beneficios filtrados y con su ficha, agrupados por año.'
+      operationId: 84ac238db0c84e4bbedee02122b98148
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        year:
+                          type: integer
+                          example: 2023
+                        num:
+                          type: integer
+                          example: 8
+                        beneficios:
+                          type: array
+                          items:
+                            properties:
+                              id_programa:
+                                type: integer
+                                example: 147
+                              monto:
+                                type: integer
+                                example: 40656
+                              fecha_recepcion:
+                                type: string
+                                example: 09/11/2023
+                              fecha:
+                                type: string
+                                example: '2023-11-09'
+                              ano:
+                                type: string
+                                example: '2023'
+                              ficha:
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 922
+                                  nombre:
+                                    type: string
+                                    example: Emprende
+                                  url:
+                                    type: string
+                                    example: emprende
+                                  categoria:
+                                    type: string
+                                    example: trabajo
+                                  descripcion:
+                                    type: string
+                                    example: 'Fondos concursables para nuevos negocios'
+                                type: object
+                            type: object
+                      type: object
+                type: object
